@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
+import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +16,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,14 +49,13 @@ public class MainActivity extends ActionBarActivity {
     static final String TAG = "Parrot";
 
     String accountEmail;
-    String id;
-    String regid;
+    String accountId;
+    String gcmRegId;
     TextView mDisplay;
     AtomicInteger msgId = new AtomicInteger();
     GoogleCloudMessaging gcm;
     Context context;
     
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,16 +65,12 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		
+		mDisplay = (TextView) findViewById(R.id.text);
+
         context = getApplicationContext();
 		
 		showGoogleAccountPicker(); 
-		
-        gcm = GoogleCloudMessaging.getInstance(this);
-        regid = getRegistrationId(context);
-
-        if (regid.isEmpty()) {
-            registerInBackground();
-        }
 	}
 	
 	@Override
@@ -111,9 +114,16 @@ public class MainActivity extends ActionBarActivity {
 	    startActivityForResult(googlePicker, ACCOUNT_REQUEST_CODE);
 	}
 	
-	
 	public void setSub(String gotSub){
-		id = gotSub;
+		accountId = gotSub;
+		
+		gcm = GoogleCloudMessaging.getInstance(this);
+        gcmRegId = getRegistrationId(context);
+        Log.d(TAG, "gcmRegId is " + gcmRegId);
+        if (gcmRegId.isEmpty()) {
+        	Log.d(TAG, "registering in background");
+            registerInBackground();
+        }
 	}
 	
 	private String getRegistrationId(Context context) {
@@ -154,6 +164,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	private void registerInBackground() {
+		Log.d(TAG, "called register");
 	    new AsyncTask<Void, Void, String>() {
 	        @Override
 	        protected String doInBackground(Void... params) {
@@ -162,8 +173,8 @@ public class MainActivity extends ActionBarActivity {
 	                if (gcm == null) {
 	                    gcm = GoogleCloudMessaging.getInstance(context);
 	                }
-	                regid = gcm.register(SENDER_ID);
-	                msg = "Device registered, registration ID=" + regid;
+	                gcmRegId = gcm.register(SENDER_ID);
+	                msg = "Device registered, registration ID=" + gcmRegId;
 
 	                // You should send the registration ID to your server over HTTP,
 	                // so it can use GCM/HTTP or CCS to send messages to your app.
@@ -172,7 +183,7 @@ public class MainActivity extends ActionBarActivity {
 	                sendRegistrationIdToBackend();
 
 	                // Persist the regID - no need to register again.
-	                storeRegistrationId(context, regid);
+	                storeRegistrationId(context, gcmRegId);
 	            } catch (IOException ex) {
 	                msg = "Error :" + ex.getMessage();
 	                // If there is an error, don't just keep trying to register.
@@ -184,14 +195,14 @@ public class MainActivity extends ActionBarActivity {
 
 	        @Override
 	        protected void onPostExecute(String msg) {
-	            mDisplay.append(msg + "\n");
+	        	Log.d(TAG, msg);
+	            //mDisplay.append(msg + "\n");
 	        }
 	    }.execute(null, null, null);
-	    
 	}
 
 	private void sendRegistrationIdToBackend() {
-	    // Your implementation here.
+		
 	}
 	
 	private void storeRegistrationId(Context context, String regId) {
@@ -205,13 +216,6 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -219,7 +223,7 @@ public class MainActivity extends ActionBarActivity {
 
 		public PlaceholderFragment() {
 		}
-
+		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -229,8 +233,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 	
-	
-	
+
 	
 
 }
