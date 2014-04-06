@@ -1,7 +1,19 @@
 package com.ddd.ClipSync;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -204,7 +216,27 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private void sendRegistrationIdToBackend() {
+		Log.i(TAG, "sending");
+		HttpClient client = new DefaultHttpClient();
+		HttpPost post 	  = new HttpPost("https://clipsync.herokuapp.com/m/register");
+		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		pairs.add(new BasicNameValuePair("google_id", accountId));
+		pairs.add(new BasicNameValuePair("gcm_id", gcmRegId));
 		
+		try {
+			post.setEntity(new UrlEncodedFormEntity(pairs));
+			HttpResponse response = client.execute(post);
+			Log.i(TAG, "Sent");
+		}catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void storeRegistrationId(Context context, String regId) {
