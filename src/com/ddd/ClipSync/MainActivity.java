@@ -8,12 +8,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -224,7 +228,10 @@ public class MainActivity extends ActionBarActivity {
 		try {
 			post.setEntity(new UrlEncodedFormEntity(pairs));
 			HttpResponse response = client.execute(post);
-			Log.i(TAG, "Sent");
+			JSONObject responseBody = new JSONObject(EntityUtils.toString(response.getEntity()));
+			if (responseBody.getBoolean("extensionInstalled")){
+				
+			}
 		}catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -232,6 +239,12 @@ public class MainActivity extends ActionBarActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
