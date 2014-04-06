@@ -73,11 +73,8 @@ public class MainActivity extends ActionBarActivity {
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
-		
-		mDisplay = (TextView) findViewById(R.id.text);
         context = getApplicationContext();
-	    
-	    
+        
         final SharedPreferences prefs = getPreferences(context);
 	    accountEmail = prefs.getString(EMAIL_ID, "");
 	    accountId = prefs.getString(ACCOUNT_ID, "");
@@ -116,7 +113,7 @@ public class MainActivity extends ActionBarActivity {
 	     if (requestCode == ACCOUNT_REQUEST_CODE && resultCode == RESULT_OK) {
 	         accountEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 	         storeEmail(context, accountEmail);
-	         Toast.makeText(this, accountEmail, Toast.LENGTH_SHORT).show();
+	         //Toast.makeText(this, accountEmail, Toast.LENGTH_SHORT).show();
 	         GetSubTask getSubTask = new GetSubTask(MainActivity.this, accountEmail, SCOPE);
 	         getSubTask.execute();
 	     }
@@ -146,6 +143,7 @@ public class MainActivity extends ActionBarActivity {
         	Log.d(TAG, "registering in background");
             registerInBackground();
         }
+        Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
 	}
 	
 	private String getRegistrationId(Context context) {
@@ -218,7 +216,6 @@ public class MainActivity extends ActionBarActivity {
 	        @Override
 	        protected void onPostExecute(String msg) {
 	        	Log.d(TAG, msg);
-	            mDisplay.append(msg + "\n");
 	        }
 	    }.execute(null, null, null);
 	}
@@ -304,6 +301,7 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
+			
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
 			return rootView;
