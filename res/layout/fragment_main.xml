@@ -8,11 +8,25 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.ddd.ClipSync.MainActivity$PlaceholderFragment" >
 
-    <TextView
-        android:id = "@+id/text"
+    <LinearLayout
+        android:id="@+id/install_extension"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:text="@string/hello_world" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="22dp"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/install_extension"
+        android:layout_marginLeft="0"
+        android:text="How to Connect"
+        android:textColor="@color/faded" />
 
 </RelativeLayout>

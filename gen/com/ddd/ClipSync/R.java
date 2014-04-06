@@ -947,7 +947,7 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f090002;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f050010;
+        public static final int abc_search_url_text_holo=0x7f050011;
         public static final int abc_search_url_text_normal=0x7f05000a;
         public static final int abc_search_url_text_pressed=0x7f05000c;
         public static final int abc_search_url_text_selected=0x7f05000b;
@@ -965,8 +965,9 @@ containing a value of this type.
         public static final int common_signin_btn_light_text_disabled=0x7f050006;
         public static final int common_signin_btn_light_text_focused=0x7f050007;
         public static final int common_signin_btn_light_text_pressed=0x7f050005;
-        public static final int common_signin_btn_text_dark=0x7f050011;
-        public static final int common_signin_btn_text_light=0x7f050012;
+        public static final int common_signin_btn_text_dark=0x7f050012;
+        public static final int common_signin_btn_text_light=0x7f050013;
+        public static final int faded=0x7f050010;
         public static final int white=0x7f05000f;
     }
     public static final class dimen {
@@ -1193,7 +1194,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f060019;
         public static final int action_menu_presenter=0x7f06001a;
         public static final int action_mode_close_button=0x7f060027;
-        public static final int action_settings=0x7f060041;
+        public static final int action_settings=0x7f060042;
         public static final int activity_chooser_view_content=0x7f060028;
         public static final int always=0x7f06000f;
         public static final int beginning=0x7f060014;
@@ -1214,6 +1215,7 @@ containing a value of this type.
         public static final int icon=0x7f06002d;
         public static final int ifRoom=0x7f06000e;
         public static final int image=0x7f06002a;
+        public static final int install_extension=0x7f060040;
         public static final int listMode=0x7f060005;
         public static final int list_item=0x7f06002c;
         public static final int middle=0x7f060015;
@@ -1242,7 +1244,7 @@ containing a value of this type.
         public static final int submit_area=0x7f06003c;
         public static final int tabMode=0x7f060006;
         public static final int terrain=0x7f060003;
-        public static final int text=0x7f060040;
+        public static final int textView1=0x7f060041;
         public static final int title=0x7f06002e;
         public static final int top_action_bar=0x7f060023;
         public static final int up=0x7f060024;

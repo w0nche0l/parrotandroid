@@ -84,7 +84,7 @@ public class MainActivity extends ActionBarActivity {
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
-		mDisplay = (TextView) findViewById(R.id.text);
+		//mDisplay = (TextView) findViewById(R.id.text);
 
         context = getApplicationContext();
 		
