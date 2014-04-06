@@ -46,7 +46,7 @@ public class GetSubTask extends AsyncTask<Void, Void, Void>{
                 // Insert the good stuff here.
                 // Use the token to access the user's Google data.
             	//http://developer.android.com/google/play-services/auth.html#use
-            	Log.e(TAG, token);
+            	Log.d(TAG, "token is " + token);
             	URL url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token="
             	        + token);
             	HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -121,7 +121,7 @@ public class GetSubTask extends AsyncTask<Void, Void, Void>{
      */
     private String getSub(String jsonResponse) throws JSONException {
       JSONObject profile = new JSONObject(jsonResponse);
-      Log.e(TAG, jsonResponse);
+      Log.d(TAG, jsonResponse);
       return profile.getString(ID_KEY);
     }
 
