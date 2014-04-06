@@ -124,6 +124,8 @@ public class MainActivity extends ActionBarActivity {
         	Log.d(TAG, "registering in background");
             registerInBackground();
         }
+        
+        //start receiver
 	}
 	
 	private String getRegistrationId(Context context) {
