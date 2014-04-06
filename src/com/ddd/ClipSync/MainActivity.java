@@ -338,7 +338,7 @@ public class MainActivity extends ActionBarActivity {
 					Intent send = new Intent(Intent.ACTION_SENDTO);
 					String uriText = "mailto:" + Uri.encode(sAccountEmail) + 
 					          "?subject=" + Uri.encode("Get Parrot") + 
-					          "&body=" + Uri.encode("");
+					          "&body=" + Uri.encode("https://chrome.google.com/webstore/detail/impimfkdnjmhckdaankjnndlndpeccdg?hl=en");
 					Uri uri = Uri.parse(uriText);
 
 					send.setData(uri);
