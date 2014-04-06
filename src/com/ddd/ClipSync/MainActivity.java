@@ -20,22 +20,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.accounts.AccountManager;
-import android.app.Activity;
-import android.app.IntentService;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,6 +48,8 @@ public class MainActivity extends ActionBarActivity {
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
+    private static final String EMAIL_ID = "email";
+    private static final String ACCOUNT_ID = "regId";
     private static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
     
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -84,11 +79,20 @@ public class MainActivity extends ActionBarActivity {
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
-		//mDisplay = (TextView) findViewById(R.id.text);
-
         context = getApplicationContext();
+        
+        final SharedPreferences prefs = getPreferences(context);
+	    accountEmail = prefs.getString(EMAIL_ID, "");
+	    accountId = prefs.getString(ACCOUNT_ID, "");
+        
+	    if(accountEmail.isEmpty() || accountId.isEmpty())
+	    	showGoogleAccountPicker();
+	    else
+	    	startGCM();
+	    
+//	    if(!accountEmail.isEmpty())
+//			sendSelfEmail(); 
 		
-		showGoogleAccountPicker(); 
 	}
 	
 	@Override
@@ -103,9 +107,6 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
@@ -119,7 +120,8 @@ public class MainActivity extends ActionBarActivity {
 	         final Intent data) {
 	     if (requestCode == ACCOUNT_REQUEST_CODE && resultCode == RESULT_OK) {
 	         accountEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-	         Toast.makeText(this, accountEmail, Toast.LENGTH_SHORT).show();
+	         storeEmail(context, accountEmail);
+	         //Toast.makeText(this, accountEmail, Toast.LENGTH_SHORT).show();
 	         GetSubTask getSubTask = new GetSubTask(MainActivity.this, accountEmail, SCOPE);
 	         getSubTask.execute();
 	     }
@@ -136,7 +138,12 @@ public class MainActivity extends ActionBarActivity {
 	
 	public void setSub(String gotSub){
 		accountId = gotSub;
-		
+		storeAccountId(context, accountId);
+		startGCM();
+        //start receiver
+	}
+	
+	public void startGCM(){
 		gcm = GoogleCloudMessaging.getInstance(this);
         gcmRegId = getRegistrationId(context);
         Log.d(TAG, "gcmRegId is " + gcmRegId);
@@ -144,12 +151,11 @@ public class MainActivity extends ActionBarActivity {
         	Log.d(TAG, "registering in background");
             registerInBackground();
         }
-        
-        //start receiver
+        Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
 	}
 	
 	private String getRegistrationId(Context context) {
-	    final SharedPreferences prefs = getGCMPreferences(context);
+	    final SharedPreferences prefs = getPreferences(context);
 	    String registrationId = prefs.getString(PROPERTY_REG_ID, "");
 	    if (registrationId.isEmpty()) {
 	        Log.i(TAG, "Registration not found.");
@@ -167,7 +173,7 @@ public class MainActivity extends ActionBarActivity {
 	    return registrationId;
 	}
 	
-	private SharedPreferences getGCMPreferences(Context context) {
+	private SharedPreferences getPreferences(Context context) {
 	    // This sample app persists the registration ID in shared preferences, but
 	    // how you store the regID in your app is up to you.
 	    return getSharedPreferences(MainActivity.class.getSimpleName(),
@@ -218,7 +224,6 @@ public class MainActivity extends ActionBarActivity {
 	        @Override
 	        protected void onPostExecute(String msg) {
 	        	Log.d(TAG, msg);
-	            //mDisplay.append(msg + "\n");
 	        }
 	    }.execute(null, null, null);
 	}
@@ -257,7 +262,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	private void storeRegistrationId(Context context, String regId) {
-	    final SharedPreferences prefs = getGCMPreferences(context);
+	    final SharedPreferences prefs = getPreferences(context);
 	    int appVersion = getAppVersion(context);
 	    Log.i(TAG, "Saving regId on app version " + appVersion);
 	    SharedPreferences.Editor editor = prefs.edit();
@@ -265,7 +270,42 @@ public class MainActivity extends ActionBarActivity {
 	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
 	    editor.commit();
 	}
+	
+	private void storeEmail(Context context, String email) {
+	    final SharedPreferences prefs = getPreferences(context);
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putString(EMAIL_ID, email);
+	    editor.commit();
+	}
 
+	private void storeAccountId(Context context, String accId) {
+	    final SharedPreferences prefs = getPreferences(context);
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putString(ACCOUNT_ID, accId);
+	    editor.commit();
+	}
+	
+//	private void storeAccessToken(Context context, String token){
+//		final SharedPreferences prefs = getPreferences(context);
+//	    int appVersion = getAppVersion(context);
+//	    Log.i(TAG, "Saving token on app version " + appVersion);
+//	    SharedPreferences.Editor editor = prefs.edit();
+//	    editor.putString(ACCESS_TOKEN_ID, token);
+//	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
+//	    editor.commit();
+//	}
+
+	private void sendSelfEmail(){
+		Intent send = new Intent(Intent.ACTION_SENDTO);
+		String uriText = "mailto:" + Uri.encode(accountEmail) + 
+		          "?subject=" + Uri.encode("Get Parrot") + 
+		          "&body=" + Uri.encode("");
+		Uri uri = Uri.parse(uriText);
+
+		send.setData(uri);
+		startActivity(Intent.createChooser(send, "Send mail..."));
+	}
+	
 	
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -278,13 +318,10 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
+			
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
 			return rootView;
 		}
 	}
-	
-
-	
-
 }
