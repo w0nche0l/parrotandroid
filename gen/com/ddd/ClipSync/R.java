@@ -947,10 +947,12 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f090002;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f05000d;
+        public static final int abc_search_url_text_holo=0x7f050010;
         public static final int abc_search_url_text_normal=0x7f05000a;
         public static final int abc_search_url_text_pressed=0x7f05000c;
         public static final int abc_search_url_text_selected=0x7f05000b;
+        public static final int action_bar_background=0x7f05000e;
+        public static final int background_color=0x7f05000d;
         public static final int common_action_bar_splitter=0x7f050009;
         /**  Sign-in Button Colors 
          */
@@ -963,8 +965,9 @@ containing a value of this type.
         public static final int common_signin_btn_light_text_disabled=0x7f050006;
         public static final int common_signin_btn_light_text_focused=0x7f050007;
         public static final int common_signin_btn_light_text_pressed=0x7f050005;
-        public static final int common_signin_btn_text_dark=0x7f05000e;
-        public static final int common_signin_btn_text_light=0x7f05000f;
+        public static final int common_signin_btn_text_dark=0x7f050011;
+        public static final int common_signin_btn_text_light=0x7f050012;
+        public static final int white=0x7f05000f;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -1469,9 +1472,9 @@ containing a value of this type.
          */
         public static final int AppBaseTheme=0x7f0b0083;
         /**  Application theme. 
- All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f0b0084;
+        public static final int MyActionBar=0x7f0b0085;
         /**  Mimic text appearance in select_dialog_item.xml 
          */
         public static final int TextAppearance_AppCompat_Base_CompactMenu_Dialog=0x7f0b0063;
