@@ -35,7 +35,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +62,7 @@ public class MainActivity extends ActionBarActivity {
     static final String TAG = "Parrot";
 
     String accountEmail;
+    static String sAccountEmail;
     String accountId;
     String gcmRegId;
     TextView mDisplay;
@@ -83,6 +86,7 @@ public class MainActivity extends ActionBarActivity {
         
         final SharedPreferences prefs = getPreferences(context);
 	    accountEmail = prefs.getString(EMAIL_ID, "");
+	    sAccountEmail = accountEmail;
 	    accountId = prefs.getString(ACCOUNT_ID, "");
         
 	    if(accountEmail.isEmpty() || accountId.isEmpty())
@@ -94,6 +98,8 @@ public class MainActivity extends ActionBarActivity {
 //			sendSelfEmail(); 
 		
 	}
+	
+
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -120,6 +126,7 @@ public class MainActivity extends ActionBarActivity {
 	         final Intent data) {
 	     if (requestCode == ACCOUNT_REQUEST_CODE && resultCode == RESULT_OK) {
 	         accountEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+	         sAccountEmail = accountEmail;
 	         storeEmail(context, accountEmail);
 	         //Toast.makeText(this, accountEmail, Toast.LENGTH_SHORT).show();
 	         GetSubTask getSubTask = new GetSubTask(MainActivity.this, accountEmail, SCOPE);
@@ -151,7 +158,7 @@ public class MainActivity extends ActionBarActivity {
         	Log.d(TAG, "registering in background");
             registerInBackground();
         }
-        Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
 	}
 	
 	private String getRegistrationId(Context context) {
@@ -299,7 +306,7 @@ public class MainActivity extends ActionBarActivity {
 		Intent send = new Intent(Intent.ACTION_SENDTO);
 		String uriText = "mailto:" + Uri.encode(accountEmail) + 
 		          "?subject=" + Uri.encode("Get Parrot") + 
-		          "&body=" + Uri.encode("");
+		          "&body=" + Uri.encode("https://chrome.google.com/webstore/detail/impimfkdnjmhckdaankjnndlndpeccdg?hl=en");
 		Uri uri = Uri.parse(uriText);
 
 		send.setData(uri);
@@ -321,6 +328,24 @@ public class MainActivity extends ActionBarActivity {
 			
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
+			
+			ImageView image = (ImageView) rootView.findViewById(R.id.imageView1);
+			image.setOnClickListener(new OnClickListener(){
+				@Override 
+		        public void onClick(View v) {
+		            //sendSelfEmail();
+					
+					Intent send = new Intent(Intent.ACTION_SENDTO);
+					String uriText = "mailto:" + Uri.encode(sAccountEmail) + 
+					          "?subject=" + Uri.encode("Get Parrot") + 
+					          "&body=" + Uri.encode("");
+					Uri uri = Uri.parse(uriText);
+
+					send.setData(uri);
+					startActivity(Intent.createChooser(send, "Send mail..."));
+		        }
+			});
+			
 			return rootView;
 		}
 	}
