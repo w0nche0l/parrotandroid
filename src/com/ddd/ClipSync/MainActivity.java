@@ -84,8 +84,8 @@ public class MainActivity extends ActionBarActivity {
 	    else
 	    	startGCM();
 	    
-	    if(!accountEmail.isEmpty())
-			sendSelfEmail(); 
+//	    if(!accountEmail.isEmpty())
+//			sendSelfEmail(); 
 		
 	}
 	
